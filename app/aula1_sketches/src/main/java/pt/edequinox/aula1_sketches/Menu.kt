@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,48 +20,66 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import pt.edequinox.aula1_sketches.ui.theme.SketchesFont
 
 @Composable
 fun Menu(
-    navController: NavController?,
-    vararg options: String
+    title: String,
+    navController: NavHostController?,
+    vararg options: Screens
 ) {
-
-    Box(modifier = Modifier.fillMaxSize()){
-        Text(text = "Sketches",
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp)
+    ) {
+        Text(
+            text= title,
             fontSize = 48.sp,
+            fontFamily = SketchesFont,
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .wrapContentWidth()
                 .fillMaxHeight()
+                .wrapContentWidth()
                 .background(Color.DarkGray)
                 .padding(4.dp)
                 .background(Color.LightGray)
                 .padding(24.dp)
-
+                .widthIn(200.dp)
         )
-        Column(verticalArrangement = Arrangement.SpaceAround,
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth(0.6f)
                 .fillMaxHeight(0.75f)
         ) {
-            options.forEach {
-                Button(onClick = {
-                    navController?.navigate(it)
-                }) {
-                    Text(text = it)
+            for(btnName in options)
+                Button(
+                    onClick = { navController?.navigate(btnName.route) },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(160,160,160)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = btnName.display,
+                        fontFamily = SketchesFont,
+                        fontSize = 24.sp,
+                        modifier = Modifier
+                            .padding(16.dp)
+                    )
                 }
-            }
-        }
 
+        }
     }
 }
 
-@Preview (showBackground = true)
+@Preview
 @Composable
 fun MenuPreview() {
-    Menu(null, "Sketch 2", "Sketch 3")
+    Menu("Sketches", null, Screens.SOLID, Screens.GALLERY, Screens.CAMERA, Screens.LIST)
 }
